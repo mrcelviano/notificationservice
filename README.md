@@ -5,9 +5,9 @@ SocialTech
 
 Сервис слушает порт 8081
 
-##GRPC
+## GRPC
 
-####SendNotification
+#### SendNotification
 Request structure
 ```
 message User {
