@@ -5,6 +5,9 @@ SocialTech
 
 Сервис слушает порт 8081
 
+### Запуск проекта
+Установить параметр Program arguments: -env local
+
 ## GRPC
 
 #### SendNotification
