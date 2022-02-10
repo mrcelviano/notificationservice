@@ -14,10 +14,6 @@ type Settings struct {
 	DataBase DataBase `json:"dataBase"`
 }
 
-func GetSettings() Settings {
-	return settings
-}
-
 // ConfigInit считывает конфигурационный файл, находящийся по пути filepath
 func ConfigInit(filepath string) {
 	log.Println("Reading a config file from a path ", filepath, "...")

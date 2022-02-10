@@ -2,9 +2,9 @@ package grpc
 
 import (
 	"context"
-	"fmt"
 	"github.com/mrcelviano/notificationservice/app"
 	p "github.com/mrcelviano/notificationservice/proto"
+	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
@@ -21,6 +21,12 @@ func NewGRPCHandlers(logic app.NotificationLogic, opts ...grpc.ServerOption) *gr
 }
 
 func (g *grpcHandlers) SendNotification(ctx context.Context, req *p.SendNotificationRequest) (resp *p.SendNotificationResponse, err error) {
-	fmt.Println("New Request!!!")
-	return &p.SendNotificationResponse{TaskID: 0}, nil
+	taskID, err := g.logic.RegisterTask(ctx, app.Task{
+		Email: req.User.Email,
+		Name:  req.User.Name,
+	})
+	if err != nil {
+		return &p.SendNotificationResponse{TaskID: 0}, errors.Wrap(err, "can`t send notification")
+	}
+	return &p.SendNotificationResponse{TaskID: taskID}, nil
 }

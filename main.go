@@ -14,10 +14,15 @@ func main() {
 	pg := commons.InitGocraftDBRConnectionPG()
 
 	//repo
-	notificationRepo := repository.NewNotificationRepository()
+	var (
+		notificationRepo = repository.NewNotificationRepository(pg)
+	)
 
-	//logic
-	notificationLogic := logic.NewNotificationLogic(notificationRepo)
+	//logiс
+	var (
+		sendLogic         = logic.NewSendNotificationLogic()
+		notificationLogic = logic.NewNotificationLogic(notificationRepo, sendLogic)
+	)
 
 	//grpc
 	g := gRPC.NewGRPCHandlers(notificationLogic, grpc.ChainUnaryInterceptor(
@@ -26,5 +31,6 @@ func main() {
 
 	commons.NewSignalHandler(g)
 	commons.StartGrpc(g, 8081)
+	notificationLogic.Start()
 	select {}
 }
