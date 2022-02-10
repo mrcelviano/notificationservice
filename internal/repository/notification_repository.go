@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 	"github.com/gocraft/dbr"
-	"github.com/mrcelviano/notificationservice/app"
 	"github.com/mrcelviano/notificationservice/commons"
+	"github.com/mrcelviano/notificationservice/internal/app"
 )
 
 type notificationRepository struct {

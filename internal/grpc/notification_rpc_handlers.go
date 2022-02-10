@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	"github.com/mrcelviano/notificationservice/app"
+	"github.com/mrcelviano/notificationservice/internal/app"
 	p "github.com/mrcelviano/notificationservice/proto"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"

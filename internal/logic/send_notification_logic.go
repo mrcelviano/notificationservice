@@ -2,7 +2,7 @@ package logic
 
 import (
 	"fmt"
-	"github.com/mrcelviano/notificationservice/app"
+	"github.com/mrcelviano/notificationservice/internal/app"
 )
 
 type sendLogic struct{}

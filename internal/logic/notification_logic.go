@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	"github.com/mrcelviano/notificationservice/app"
+	"github.com/mrcelviano/notificationservice/internal/app"
 	"github.com/pkg/errors"
 	cron "github.com/robfig/cron/v3"
 	"log"
