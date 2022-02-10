@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	timeValue       = time.Minute
+	timeValue       = time.Minute * 5
 	countGoroutines = 5
 )
 
@@ -56,7 +56,7 @@ func (n *notificationLogic) Start() {
 
 	now := time.Now().Truncate(time.Minute)
 	n.fromTime = now.Unix()
-	n.toTime = now.Add(timeValue).Unix() - 1
+	n.toTime = now.Add(time.Minute).Unix() - 1
 	log.Println("Started")
 	n.run()
 }
