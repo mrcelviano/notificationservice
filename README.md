@@ -1,13 +1,13 @@
-# notificationservice
+# notificationservice#
 SocialTech
 
 Сервис отвечает за уведомления пользователей о регистрации
 
 Сервис слушает порт 8081
 
-##GRPC
+##GRPC##
 
-####SendNotification
+####SendNotification####
 Request structure
 ```
 message User {
