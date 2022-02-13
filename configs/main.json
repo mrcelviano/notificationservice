@@ -1,0 +1,13 @@
+{
+  "grpc": {
+    "port": "8081"
+  },
+  "postgres":
+  {
+    "host":"127.0.0.1",
+    "port":"5432",
+    "user":"postgres",
+    "dbName":"postgres",
+    "password":""
+  }
+}
