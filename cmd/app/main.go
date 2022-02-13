@@ -56,6 +56,7 @@ func main() {
 		err := server.Serve(lis)
 		if err != nil {
 			logger.Errorf("can`t run http server: %s\n", err.Error())
+			return
 		}
 	}()
 
