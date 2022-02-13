@@ -93,14 +93,14 @@ func (n *notificationService) worker() {
 			logger.Errorf("can`t sender notification: %s\n", err.Error())
 			continue
 		}
-		err = n.repositoryPG.Delete(task.ID)
-		if err != nil {
-			logger.Errorf("can`t delete task: %s\n", err.Error())
-			continue
-		}
 		isSetStatus, err := n.user.SetIsRegisteredStatus(ctx, task.UserID)
 		if err != nil && !isSetStatus {
 			logger.Errorf("can`t set status registered user: %s\n", err.Error())
+			continue
+		}
+		err = n.repositoryPG.Delete(task.ID)
+		if err != nil {
+			logger.Errorf("can`t delete task: %s\n", err.Error())
 		}
 	}
 }
