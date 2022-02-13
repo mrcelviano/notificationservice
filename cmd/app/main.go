@@ -43,10 +43,10 @@ func main() {
 		notificationService = service.NewNotificationService(notificationRepo, sendLogic)
 	)
 
-	notificationService.Start()
-
 	//delivery
 	server := delivery.NewNotificationServer(notificationService)
+
+	logger.Info("server start")
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.GRPC.Port))
 	if err != nil {
@@ -60,12 +60,9 @@ func main() {
 		}
 	}()
 
-	logger.Info("server started")
+	logger.Info("scheduler start")
 
-	//scheduler
-	notificationService.Start()
-
-	logger.Info("scheduler started")
+	notificationService.StartScheduler()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)

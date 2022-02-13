@@ -3,9 +3,8 @@ package service
 import (
 	"context"
 	"github.com/mrcelviano/notificationservice/internal/domain"
-	"github.com/pkg/errors"
-	cron "github.com/robfig/cron/v3"
-	"log"
+	"github.com/mrcelviano/notificationservice/pkg/logger"
+	"github.com/mrcelviano/notificationservice/pkg/scheduler"
 	"time"
 )
 
@@ -15,8 +14,9 @@ const (
 )
 
 type notificationService struct {
-	repo     domain.NotificationRepositoryPG
-	send     domain.SendService
+	repo domain.NotificationRepositoryPG
+	send domain.SendService
+
 	chTasks  chan domain.Task
 	fromTime int64
 	toTime   int64
@@ -30,25 +30,21 @@ func NewNotificationService(repo domain.NotificationRepositoryPG, send domain.Se
 }
 
 func (n *notificationService) RegisterTask(ctx context.Context, task domain.Task) (id int64, err error) {
-	runTime := time.Now()
-	runTime = runTime.Add(timeValue)
-
-	task.RunTime = runTime.Unix()
+	task.RunTime = time.Now().Add(timeValue).Unix()
 	task, err = n.repo.Create(ctx, task)
 	if err != nil {
-		return id, errors.Wrap(err, "can`t create task")
+		return id, domain.ErrCantExecSQLRequest
 	}
 	return task.ID, nil
 }
 
-func (n *notificationService) Start() {
-	cr := cron.New(cron.WithSeconds())
-	_, err := cr.AddFunc("0 * * * * *", n.run)
+func (n *notificationService) StartScheduler() {
+	err := scheduler.Start(n.run)
 	if err != nil {
-		panic(err)
+		logger.Errorf("can`t start scheduler:  %s\n", err.Error())
+		return
 	}
 
-	cr.Start()
 	n.chTasks = make(chan domain.Task, 100)
 	for i := 0; i < countGoroutines; i++ {
 		go n.worker()
@@ -57,14 +53,14 @@ func (n *notificationService) Start() {
 	now := time.Now().Truncate(time.Minute)
 	n.fromTime = now.Unix()
 	n.toTime = now.Add(time.Minute).Unix() - 1
-	log.Println("Started")
+
 	n.run()
 }
 
 func (n *notificationService) run() {
 	tasks, err := n.repo.GetTasks(n.fromTime, n.toTime)
 	if err != nil {
-		log.Println("can`t get task list")
+		logger.Info("can`t get task list")
 		//если не смогли получить задачи из бд, следующий раз забираем задачи этой минуты
 		n.toTime = time.Unix(n.toTime, 0).Add(time.Minute).Unix()
 		return
@@ -80,9 +76,14 @@ func (n *notificationService) run() {
 
 func (n *notificationService) worker() {
 	for task := range n.chTasks {
-		n.send.SendNotification(task.Email, task.Name)
-		if err := n.repo.Delete(task.ID); err != nil {
-			log.Println("can`t delete task from db")
+		err := n.send.SendNotification(task.Email, task.Name)
+		if err != nil {
+			logger.Info("can`t send notification")
+			continue
+		}
+		err = n.repo.Delete(task.ID)
+		if err != nil {
+			logger.Info("can`t delete task from db")
 		}
 	}
 }

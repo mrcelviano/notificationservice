@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/mrcelviano/notificationservice/internal/domain"
 	"github.com/mrcelviano/notificationservice/pkg/notification/proto"
-	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
@@ -26,7 +25,7 @@ func (g *notificationServer) SendNotification(ctx context.Context, req *proto.Se
 		Name:  req.User.Name,
 	})
 	if err != nil {
-		return &proto.SendNotificationResponse{TaskID: 0}, errors.Wrap(err, "can`t send notification")
+		return &proto.SendNotificationResponse{TaskID: 0}, domain.ErrRegisterNotification
 	}
 	return &proto.SendNotificationResponse{TaskID: taskID}, nil
 }
