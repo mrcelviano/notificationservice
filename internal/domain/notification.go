@@ -13,7 +13,7 @@ type Task struct {
 
 type NotificationService interface {
 	RegisterTask(context.Context, Task) (int64, error)
-	StartScheduler()
+	StartNotificationScheduler()
 }
 
 type NotificationRepositoryPG interface {

@@ -39,8 +39,8 @@ func main() {
 
 	//service
 	var (
-		sendLogic           = service.NewSenderService()
-		notificationService = service.NewNotificationService(notificationRepo, sendLogic)
+		senderService       = service.NewSenderService()
+		notificationService = service.NewNotificationService(notificationRepo, senderService)
 	)
 
 	//delivery
@@ -62,7 +62,7 @@ func main() {
 
 	logger.Info("scheduler start")
 
-	notificationService.StartScheduler()
+	notificationService.StartNotificationScheduler()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)

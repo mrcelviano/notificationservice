@@ -14,31 +14,31 @@ const (
 )
 
 type notificationService struct {
-	repo domain.NotificationRepositoryPG
-	send domain.SendService
+	repositoryPG domain.NotificationRepositoryPG
+	sender       domain.SenderService
 
 	chTasks  chan domain.Task
 	fromTime int64
 	toTime   int64
 }
 
-func NewNotificationService(repo domain.NotificationRepositoryPG, send domain.SendService) domain.NotificationService {
+func NewNotificationService(repositoryPG domain.NotificationRepositoryPG, sender domain.SenderService) domain.NotificationService {
 	return &notificationService{
-		repo: repo,
-		send: send,
+		repositoryPG: repositoryPG,
+		sender:       sender,
 	}
 }
 
 func (n *notificationService) RegisterTask(ctx context.Context, task domain.Task) (id int64, err error) {
 	task.RunTime = time.Now().Add(timeValue).Unix()
-	task, err = n.repo.Create(ctx, task)
+	task, err = n.repositoryPG.Create(ctx, task)
 	if err != nil {
 		return id, domain.ErrCantExecSQLRequest
 	}
 	return task.ID, nil
 }
 
-func (n *notificationService) StartScheduler() {
+func (n *notificationService) StartNotificationScheduler() {
 	err := scheduler.Start(n.run)
 	if err != nil {
 		logger.Errorf("can`t start scheduler:  %s\n", err.Error())
@@ -58,7 +58,7 @@ func (n *notificationService) StartScheduler() {
 }
 
 func (n *notificationService) run() {
-	tasks, err := n.repo.GetTasks(n.fromTime, n.toTime)
+	tasks, err := n.repositoryPG.GetTasks(n.fromTime, n.toTime)
 	if err != nil {
 		logger.Info("can`t get task list")
 		//если не смогли получить задачи из бд, следующий раз забираем задачи этой минуты
@@ -76,12 +76,12 @@ func (n *notificationService) run() {
 
 func (n *notificationService) worker() {
 	for task := range n.chTasks {
-		err := n.send.SendNotification(task.Email, task.Name)
+		err := n.sender.SendNotification(task.Email, task.Name)
 		if err != nil {
-			logger.Info("can`t send notification")
+			logger.Info("can`t sender notification")
 			continue
 		}
-		err = n.repo.Delete(task.ID)
+		err = n.repositoryPG.Delete(task.ID)
 		if err != nil {
 			logger.Info("can`t delete task from db")
 		}

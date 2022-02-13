@@ -1,5 +1,5 @@
 package domain
 
-type SendService interface {
+type SenderService interface {
 	SendNotification(string, string) error
 }

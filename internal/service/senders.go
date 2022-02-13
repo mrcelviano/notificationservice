@@ -7,7 +7,7 @@ import (
 
 type senderService struct{}
 
-func NewSenderService() domain.SendService {
+func NewSenderService() domain.SenderService {
 	return &senderService{}
 }
 
