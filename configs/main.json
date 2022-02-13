@@ -9,5 +9,8 @@
     "user":"postgres",
     "dbName":"postgres",
     "password":""
+  },
+  "services": {
+    "userservice": "127.0.0.1:8082"
   }
 }
