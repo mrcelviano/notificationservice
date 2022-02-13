@@ -60,7 +60,7 @@ func (n *notificationService) StartNotificationScheduler() {
 func (n *notificationService) run() {
 	tasks, err := n.repositoryPG.GetTasks(n.fromTime, n.toTime)
 	if err != nil {
-		logger.Infof("can`t get task list: %s\n", err.Error())
+		logger.Errorf("can`t get task list: %s\n", err.Error())
 		//если не смогли получить задачи из бд, следующий раз забираем задачи этой минуты
 		n.toTime = time.Unix(n.toTime, 0).Add(time.Minute).Unix()
 		return
