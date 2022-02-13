@@ -8,6 +8,7 @@ import (
 	"github.com/mrcelviano/notificationservice/internal/service"
 	"github.com/mrcelviano/notificationservice/pkg/database/postgres"
 	"github.com/mrcelviano/notificationservice/pkg/logger"
+	"github.com/mrcelviano/notificationservice/pkg/user"
 	"net"
 	"os"
 	"os/signal"
@@ -37,10 +38,17 @@ func main() {
 		notificationRepo = repository.NewNotificationRepositoryPG(postgresConnection)
 	)
 
+	//rpc
+	userClient, err := user.NewUserClient(cfg.Services)
+	if err != nil {
+		logger.Error(err)
+		return
+	}
+
 	//service
 	var (
 		senderService       = service.NewSenderService()
-		notificationService = service.NewNotificationService(notificationRepo, senderService)
+		notificationService = service.NewNotificationService(notificationRepo, senderService, userClient)
 	)
 
 	//delivery

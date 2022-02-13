@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/processout/grpc-go-pool v1.2.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.10.1
 )

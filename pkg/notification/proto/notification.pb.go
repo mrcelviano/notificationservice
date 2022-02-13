@@ -4,7 +4,7 @@
 // 	protoc        v3.19.4
 // source: notification.proto
 
-package proto
+package api
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -20,18 +20,16 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type User struct {
+type RegisterNotificationRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ID    int64  `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
-	Email string `protobuf:"bytes,2,opt,name=Email,proto3" json:"Email,omitempty"`
-	Name  string `protobuf:"bytes,3,opt,name=Name,proto3" json:"Name,omitempty"`
+	UserID int64 `protobuf:"varint,1,opt,name=UserID,proto3" json:"UserID,omitempty"`
 }
 
-func (x *User) Reset() {
-	*x = User{}
+func (x *RegisterNotificationRequest) Reset() {
+	*x = RegisterNotificationRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_notification_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -39,13 +37,13 @@ func (x *User) Reset() {
 	}
 }
 
-func (x *User) String() string {
+func (x *RegisterNotificationRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*User) ProtoMessage() {}
+func (*RegisterNotificationRequest) ProtoMessage() {}
 
-func (x *User) ProtoReflect() protoreflect.Message {
+func (x *RegisterNotificationRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_notification_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,42 +55,28 @@ func (x *User) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use User.ProtoReflect.Descriptor instead.
-func (*User) Descriptor() ([]byte, []int) {
+// Deprecated: Use RegisterNotificationRequest.ProtoReflect.Descriptor instead.
+func (*RegisterNotificationRequest) Descriptor() ([]byte, []int) {
 	return file_notification_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *User) GetID() int64 {
+func (x *RegisterNotificationRequest) GetUserID() int64 {
 	if x != nil {
-		return x.ID
+		return x.UserID
 	}
 	return 0
 }
 
-func (x *User) GetEmail() string {
-	if x != nil {
-		return x.Email
-	}
-	return ""
-}
-
-func (x *User) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-type SendNotificationRequest struct {
+type RegisterNotificationResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	User *User `protobuf:"bytes,1,opt,name=User,proto3" json:"User,omitempty"`
+	IsRegistered bool `protobuf:"varint,1,opt,name=IsRegistered,proto3" json:"IsRegistered,omitempty"`
 }
 
-func (x *SendNotificationRequest) Reset() {
-	*x = SendNotificationRequest{}
+func (x *RegisterNotificationResponse) Reset() {
+	*x = RegisterNotificationResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_notification_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -100,13 +84,13 @@ func (x *SendNotificationRequest) Reset() {
 	}
 }
 
-func (x *SendNotificationRequest) String() string {
+func (x *RegisterNotificationResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SendNotificationRequest) ProtoMessage() {}
+func (*RegisterNotificationResponse) ProtoMessage() {}
 
-func (x *SendNotificationRequest) ProtoReflect() protoreflect.Message {
+func (x *RegisterNotificationResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_notification_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -118,89 +102,39 @@ func (x *SendNotificationRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SendNotificationRequest.ProtoReflect.Descriptor instead.
-func (*SendNotificationRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use RegisterNotificationResponse.ProtoReflect.Descriptor instead.
+func (*RegisterNotificationResponse) Descriptor() ([]byte, []int) {
 	return file_notification_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *SendNotificationRequest) GetUser() *User {
+func (x *RegisterNotificationResponse) GetIsRegistered() bool {
 	if x != nil {
-		return x.User
+		return x.IsRegistered
 	}
-	return nil
-}
-
-type SendNotificationResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	TaskID int64 `protobuf:"varint,1,opt,name=TaskID,proto3" json:"TaskID,omitempty"`
-}
-
-func (x *SendNotificationResponse) Reset() {
-	*x = SendNotificationResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_notification_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *SendNotificationResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SendNotificationResponse) ProtoMessage() {}
-
-func (x *SendNotificationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_notification_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SendNotificationResponse.ProtoReflect.Descriptor instead.
-func (*SendNotificationResponse) Descriptor() ([]byte, []int) {
-	return file_notification_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *SendNotificationResponse) GetTaskID() int64 {
-	if x != nil {
-		return x.TaskID
-	}
-	return 0
+	return false
 }
 
 var File_notification_proto protoreflect.FileDescriptor
 
 var file_notification_proto_rawDesc = []byte{
 	0x0a, 0x12, 0x6e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x03, 0x61, 0x70, 0x69, 0x22, 0x40, 0x0a, 0x04, 0x55, 0x73, 0x65,
-	0x72, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x49,
-	0x44, 0x12, 0x14, 0x0a, 0x05, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x38, 0x0a, 0x17, 0x53,
-	0x65, 0x6e, 0x64, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52,
-	0x04, 0x55, 0x73, 0x65, 0x72, 0x22, 0x32, 0x0a, 0x18, 0x53, 0x65, 0x6e, 0x64, 0x4e, 0x6f, 0x74,
-	0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x16, 0x0a, 0x06, 0x54, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x03, 0x52, 0x06, 0x54, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x32, 0x68, 0x0a, 0x13, 0x4e, 0x6f, 0x74,
-	0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
-	0x12, 0x51, 0x0a, 0x10, 0x53, 0x65, 0x6e, 0x64, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x53, 0x65, 0x6e, 0x64, 0x4e,
-	0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x1d, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x53, 0x65, 0x6e, 0x64, 0x4e, 0x6f, 0x74,
-	0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x42, 0x07, 0x5a, 0x05, 0x2e, 0x2f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x03, 0x61, 0x70, 0x69, 0x22, 0x35, 0x0a, 0x1b, 0x52, 0x65, 0x67,
+	0x69, 0x73, 0x74, 0x65, 0x72, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x55, 0x73, 0x65, 0x72,
+	0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44,
+	0x22, 0x42, 0x0a, 0x1c, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4e, 0x6f, 0x74, 0x69,
+	0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x22, 0x0a, 0x0c, 0x49, 0x73, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x65, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0c, 0x49, 0x73, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74,
+	0x65, 0x72, 0x65, 0x64, 0x32, 0x74, 0x0a, 0x13, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x5d, 0x0a, 0x14, 0x52,
+	0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x12, 0x20, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74,
+	0x65, 0x72, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x52, 0x65, 0x67, 0x69,
+	0x73, 0x74, 0x65, 0x72, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x07, 0x5a, 0x05, 0x2e, 0x2f,
+	0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -215,21 +149,19 @@ func file_notification_proto_rawDescGZIP() []byte {
 	return file_notification_proto_rawDescData
 }
 
-var file_notification_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_notification_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_notification_proto_goTypes = []interface{}{
-	(*User)(nil),                     // 0: api.User
-	(*SendNotificationRequest)(nil),  // 1: api.SendNotificationRequest
-	(*SendNotificationResponse)(nil), // 2: api.SendNotificationResponse
+	(*RegisterNotificationRequest)(nil),  // 0: api.RegisterNotificationRequest
+	(*RegisterNotificationResponse)(nil), // 1: api.RegisterNotificationResponse
 }
 var file_notification_proto_depIdxs = []int32{
-	0, // 0: api.SendNotificationRequest.User:type_name -> api.User
-	1, // 1: api.NotificationService.SendNotification:input_type -> api.SendNotificationRequest
-	2, // 2: api.NotificationService.SendNotification:output_type -> api.SendNotificationResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // 0: api.NotificationService.RegisterNotification:input_type -> api.RegisterNotificationRequest
+	1, // 1: api.NotificationService.RegisterNotification:output_type -> api.RegisterNotificationResponse
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_notification_proto_init() }
@@ -239,7 +171,7 @@ func file_notification_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_notification_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*User); i {
+			switch v := v.(*RegisterNotificationRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -251,19 +183,7 @@ func file_notification_proto_init() {
 			}
 		}
 		file_notification_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SendNotificationRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_notification_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SendNotificationResponse); i {
+			switch v := v.(*RegisterNotificationResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -281,7 +201,7 @@ func file_notification_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_notification_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

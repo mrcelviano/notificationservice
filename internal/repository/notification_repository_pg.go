@@ -16,24 +16,22 @@ func NewNotificationRepositoryPG(pgDBConn *goCraft.Connection) domain.Notificati
 	}
 }
 
-func (n *notificationRepositoryPG) Create(ctx context.Context, task domain.Task) (domain.Task, error) {
-	var newTask domain.Task
-	err := n.pgSession.
+func (n *notificationRepositoryPG) Create(ctx context.Context, task domain.Task) error {
+	_, err := n.pgSession.
 		InsertInto("task").
-		Columns("run_time", "email", "name").
+		Columns("run_time", "user_id").
 		Record(task).
-		Returning("id", "run_time", "email", "name").
-		LoadContext(ctx, &newTask)
+		ExecContext(ctx)
 	if err != nil {
-		return newTask, domain.ErrCantExecSQLRequest
+		return domain.ErrCantExecSQLRequest
 	}
-	return newTask, nil
+	return nil
 }
 
 func (n *notificationRepositoryPG) GetTasks(from int64, to int64) ([]domain.Task, error) {
 	var taskList []domain.Task
 	_, err := n.pgSession.
-		Select("id", "run_time", "email", "name").
+		Select("id", "run_time", "user_id").
 		From("task").
 		Where("run_time between ? and ?", from, to).
 		LoadContext(context.Background(), &taskList)

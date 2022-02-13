@@ -5,6 +5,7 @@ import (
 	"github.com/mrcelviano/notificationservice/internal/domain"
 	"github.com/mrcelviano/notificationservice/pkg/logger"
 	"github.com/mrcelviano/notificationservice/pkg/scheduler"
+	"github.com/mrcelviano/notificationservice/pkg/user"
 	"time"
 )
 
@@ -15,6 +16,7 @@ const (
 
 type notificationService struct {
 	repositoryPG domain.NotificationRepositoryPG
+	user         user.Service
 	sender       domain.SenderService
 
 	chTasks  chan domain.Task
@@ -22,20 +24,24 @@ type notificationService struct {
 	toTime   int64
 }
 
-func NewNotificationService(repositoryPG domain.NotificationRepositoryPG, sender domain.SenderService) domain.NotificationService {
+func NewNotificationService(repositoryPG domain.NotificationRepositoryPG, sender domain.SenderService, user user.Service) domain.NotificationService {
 	return &notificationService{
 		repositoryPG: repositoryPG,
 		sender:       sender,
+		user:         user,
 	}
 }
 
-func (n *notificationService) RegisterTask(ctx context.Context, task domain.Task) (id int64, err error) {
-	task.RunTime = time.Now().Add(timeValue).Unix()
-	task, err = n.repositoryPG.Create(ctx, task)
+func (n *notificationService) RegisterTask(ctx context.Context, userID int64) (bool, error) {
+	err := n.repositoryPG.Create(ctx,
+		domain.Task{
+			RunTime: time.Now().Add(timeValue).Unix(),
+			UserID:  userID,
+		})
 	if err != nil {
-		return id, err
+		return false, err
 	}
-	return task.ID, nil
+	return true, nil
 }
 
 func (n *notificationService) StartNotificationScheduler() {
@@ -76,7 +82,13 @@ func (n *notificationService) run() {
 
 func (n *notificationService) worker() {
 	for task := range n.chTasks {
-		err := n.sender.SendNotification(task.Email, task.Name)
+		ctx := context.Background()
+		userByID, err := n.user.GetUserByID(ctx, task.UserID)
+		if err != nil {
+			logger.Errorf("can`t get userByID: %s\n", err.Error())
+			continue
+		}
+		err = n.sender.SendNotification(userByID.Email, userByID.Name)
 		if err != nil {
 			logger.Errorf("can`t sender notification: %s\n", err.Error())
 			continue
@@ -84,6 +96,11 @@ func (n *notificationService) worker() {
 		err = n.repositoryPG.Delete(task.ID)
 		if err != nil {
 			logger.Errorf("can`t delete task: %s\n", err.Error())
+			continue
+		}
+		isSetStatus, err := n.user.SetIsRegisteredStatus(ctx, task.UserID)
+		if err != nil && !isSetStatus {
+			logger.Errorf("can`t set status registered user: %s\n", err.Error())
 		}
 	}
 }

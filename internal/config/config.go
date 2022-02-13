@@ -8,6 +8,7 @@ type (
 	Config struct {
 		Postgres PostgresConfig
 		GRPC     GRPCConfig
+		Services map[string]string
 	}
 
 	PostgresConfig struct {
@@ -38,6 +39,10 @@ func Init(configsDir string) (*Config, error) {
 
 func unmarshal(cfg *Config) error {
 	if err := viper.UnmarshalKey("postgres", &cfg.Postgres); err != nil {
+		return err
+	}
+
+	if err := viper.UnmarshalKey("services", &cfg.Services); err != nil {
 		return err
 	}
 
