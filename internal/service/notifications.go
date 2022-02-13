@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	timeValue       = time.Minute * 30
+	timeValue       = time.Minute * 1
 	countGoroutines = 5
 )
 

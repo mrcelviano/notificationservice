@@ -63,7 +63,7 @@ func main() {
 	go func() {
 		err := server.Serve(lis)
 		if err != nil {
-			logger.Errorf("can`t run http server: %s\n", err.Error())
+			logger.Errorf("can`t run grpc server: %s\n", err.Error())
 			return
 		}
 	}()
