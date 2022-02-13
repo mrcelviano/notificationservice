@@ -33,7 +33,7 @@ func (n *notificationService) RegisterTask(ctx context.Context, task domain.Task
 	task.RunTime = time.Now().Add(timeValue).Unix()
 	task, err = n.repositoryPG.Create(ctx, task)
 	if err != nil {
-		return id, domain.ErrCantExecSQLRequest
+		return id, err
 	}
 	return task.ID, nil
 }
@@ -41,7 +41,7 @@ func (n *notificationService) RegisterTask(ctx context.Context, task domain.Task
 func (n *notificationService) StartNotificationScheduler() {
 	err := scheduler.Start(n.run)
 	if err != nil {
-		logger.Errorf("can`t start scheduler:  %s\n", err.Error())
+		logger.Errorf("can`t start scheduler: %s\n", err.Error())
 		return
 	}
 
@@ -60,7 +60,7 @@ func (n *notificationService) StartNotificationScheduler() {
 func (n *notificationService) run() {
 	tasks, err := n.repositoryPG.GetTasks(n.fromTime, n.toTime)
 	if err != nil {
-		logger.Info("can`t get task list")
+		logger.Infof("can`t get task list: %s\n", err.Error())
 		//если не смогли получить задачи из бд, следующий раз забираем задачи этой минуты
 		n.toTime = time.Unix(n.toTime, 0).Add(time.Minute).Unix()
 		return
@@ -78,12 +78,12 @@ func (n *notificationService) worker() {
 	for task := range n.chTasks {
 		err := n.sender.SendNotification(task.Email, task.Name)
 		if err != nil {
-			logger.Info("can`t sender notification")
+			logger.Errorf("can`t sender notification: %s\n", err.Error())
 			continue
 		}
 		err = n.repositoryPG.Delete(task.ID)
 		if err != nil {
-			logger.Info("can`t delete task from db")
+			logger.Errorf("can`t delete task: %s\n", err.Error())
 		}
 	}
 }

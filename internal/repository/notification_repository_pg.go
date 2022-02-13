@@ -25,7 +25,7 @@ func (n *notificationRepositoryPG) Create(ctx context.Context, task domain.Task)
 		Returning("id", "run_time", "email", "name").
 		LoadContext(ctx, &newTask)
 	if err != nil {
-		return newTask, err
+		return newTask, domain.ErrCantExecSQLRequest
 	}
 	return newTask, nil
 }
@@ -38,7 +38,7 @@ func (n *notificationRepositoryPG) GetTasks(from int64, to int64) ([]domain.Task
 		Where("run_time between ? and ?", from, to).
 		LoadContext(context.Background(), &taskList)
 	if err != nil {
-		return nil, err
+		return nil, domain.ErrCantExecSQLRequest
 	}
 	return taskList, nil
 }
