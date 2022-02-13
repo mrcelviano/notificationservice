@@ -64,6 +64,7 @@ func main() {
 
 	//scheduler
 	notificationService.Start()
+
 	logger.Info("scheduler started")
 
 	quit := make(chan os.Signal, 1)
