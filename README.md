@@ -1,5 +1,4 @@
 # notificationservice
-SocialTech
 
 Сервис отвечает за уведомления пользователей о регистрации
 
